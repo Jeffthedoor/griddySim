@@ -59,6 +59,10 @@ public class LiftSim extends SubsystemBase {
                 6,
                 new Color8Bit(Color.kAquamarine)));
 
+    private final double gridHomeX = 40.25;
+    private final double highNodeHomeX = 79.42;
+    private final double midNodeHomeX = 62.17;
+
     private final MechanismRoot2d highNodeHome = mech2d.getRoot("High Node", highNodeHomeX, 0);
     private final MechanismRoot2d midNodeHome = mech2d.getRoot("Mid Node", midNodeHomeX, 0);
     private final MechanismRoot2d gridHome = mech2d.getRoot("Grid Home", gridHomeX, 0);
@@ -106,10 +110,17 @@ public class LiftSim extends SubsystemBase {
             allowJump = true;
         } 
 
-        if(mechX + 30.5 == 90 || mechX == 0) {
+        //0 is cone, 1 is cube
+        if(mechX + 30.5 >= 90 || mechX <= 0) {
             scene = !scene;
+
+            mechX = 13;
         } 
-        gridHome.
+        MidNode.setLength(scene ? 34 : 23.5);
+        HighNode.setLength(scene ? 46 : 40);
+
+        MidNode.setLineWeight(scene ? 10 : 105);
+        HighNode.setLineWeight(scene ? 10 : 105);
         
         if(!(mechX + 30.5 >= gridHomeX && deltaX.getAsDouble() > 0) || (mechY >= 10)) {
             mechX += deltaX.getAsDouble();
