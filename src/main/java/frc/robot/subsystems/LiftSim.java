@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -33,11 +36,11 @@ public class LiftSim extends SubsystemBase {
   // Create a Mechanism2d display of an wrist with a fixed wristTower and moving wrist.
 
     private final Mechanism2d mech2d = new Mechanism2d(90, 90);
-    private final MechanismRoot2d mech2dRoot = mech2d.getRoot("Elevator Root", 13, 5);
+    private final MechanismRoot2d eleRoot = mech2d.getRoot("Elevator Root", 13, 5);
   private final MechanismLigament2d elevatorMech2d =
-      mech2dRoot.append(
+      eleRoot.append(
           new MechanismLigament2d("Elevator", 37, 55));
-    private final MechanismLigament2d stageOne = mech2dRoot.append(new MechanismLigament2d("Stage One", 37, 55, 12, new Color8Bit(Color.kRed)));
+    private final MechanismLigament2d stageOne = eleRoot.append(new MechanismLigament2d("Stage One", 37, 55, 12, new Color8Bit(Color.kRed)));
     // private final MechanismLigament2d armTower = armPivot.append(new MechanismLigament2d("Elevator", 30, 235));
     private final MechanismLigament2d armMech =
         elevatorMech2d.append(
@@ -56,26 +59,36 @@ public class LiftSim extends SubsystemBase {
                 6,
                 new Color8Bit(Color.kAquamarine)));
 
-
-    private final MechanismRoot2d highNodeHome = mech2d.getRoot("High Node", 79.42, 0);
-    private final MechanismRoot2d midNodeHome = mech2d.getRoot("Mid Node", 62.17, 0);
-    private final MechanismRoot2d gridHome = mech2d.getRoot("Grid Home", 40.25, 0);
+    private final MechanismRoot2d highNodeHome = mech2d.getRoot("High Node", highNodeHomeX, 0);
+    private final MechanismRoot2d midNodeHome = mech2d.getRoot("Mid Node", midNodeHomeX, 0);
+    private final MechanismRoot2d gridHome = mech2d.getRoot("Grid Home", gridHomeX, 0);
+    // private final MechanismRoot2d bumperRoot = eleRoot.append(new MechanismRoot2d("Grid Home", 40.25, 0));
     private final MechanismLigament2d MidNode = midNodeHome.append(new MechanismLigament2d("Mid Cone Node", 34, 90, 10, new Color8Bit(Color.kWhite)));
     private final MechanismLigament2d HighNode = highNodeHome.append(new MechanismLigament2d("High Cone Node", 46, 90, 10, new Color8Bit(Color.kWhite)));
     private final MechanismLigament2d GridNode = gridHome.append(new MechanismLigament2d("Grid Wall", 49.75, 0, 50, new Color8Bit(Color.kWhite)));
-    private final MechanismLigament2d bumper = gridHome.append(new MechanismLigament2d("Bumper", 30.5, 180, 60, new Color8Bit(Color.kRed)));
+    private final MechanismLigament2d bumper = eleRoot.append(new MechanismLigament2d("Bumper", 30.5, 0, 60, new Color8Bit(Color.kRed)));
 
     private final ArmSim arm;
     private final WristSim wrist;
     private final Elevator elevator;
 
-    public LiftSim(ArmSim arm, WristSim wrist, Elevator elevator) {
+    private DoubleSupplier deltaX;
+    private BooleanSupplier isJumping;
+    private double mechX = 13; 
+    private double mechY = 5;
+    private boolean allowJump = true;
+
+    private boolean scene = false;
+
+    public LiftSim(ArmSim arm, WristSim wrist, Elevator elevator, DoubleSupplier deltaX, BooleanSupplier isJumping) {
         // Put Mechanism 2d to SmartDashboard
         SmartDashboard.putData("Arm Sim", mech2d);
 
         this.arm = arm;
         this.wrist = wrist;
         this.elevator = elevator;
+        this.deltaX = deltaX;
+        this.isJumping = isJumping;
     }
 
     @Override
@@ -83,6 +96,25 @@ public class LiftSim extends SubsystemBase {
         wristMech.setAngle(wrist.getAngle());
         armMech.setAngle(arm.getAngle() - 55);
         elevatorMech2d.setLength(elevator.getExtension() + 37);
+
+        if(isJumping.getAsBoolean() && mechY <= 30 && allowJump) {
+            mechY += 4;            
+        } else if(mechY > 5) {
+            mechY -= 0.5;
+            allowJump = false;
+        } else if (mechY == 5) {
+            allowJump = true;
+        } 
+
+        if(mechX + 30.5 == 90 || mechX == 0) {
+            scene = !scene;
+        } 
+        gridHome.
+        
+        if(!(mechX + 30.5 >= gridHomeX && deltaX.getAsDouble() > 0) || (mechY >= 10)) {
+            mechX += deltaX.getAsDouble();
+        }
+        eleRoot.setPosition(mechX, mechY);
     }
 
 

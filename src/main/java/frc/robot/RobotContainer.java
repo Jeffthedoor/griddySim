@@ -26,15 +26,15 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+  private final XboxController copilot = new XboxController(1);
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final ArmSim armSim = new ArmSim();
   private final WristSim wristSim = new WristSim(armSim);
   private final Elevator elevatorSim = new Elevator();
-  private final LiftSim liftSim = new LiftSim(armSim, wristSim, elevatorSim);
-
+  private final LiftSim liftSim = new LiftSim(armSim, wristSim, elevatorSim, () -> copilot.getRawAxis(0),  () -> copilot.getRawButton(7));
+  
   // // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final XboxController copilot = new XboxController(1);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -64,8 +64,8 @@ public class RobotContainer {
         new Trigger(copilot::getBButton).onTrue(new InstantCommand(() -> liftSim.setGoalState(LiftState.stowed), liftSim));
         new Trigger(copilot::getYButton).onTrue(new InstantCommand(() -> liftSim.setGoalState(LiftState.highConeScore), liftSim));
         new Trigger(copilot::getXButton).onTrue(new InstantCommand(() -> liftSim.setGoalState(LiftState.midConeScore), liftSim));
-        new Trigger(copilot::getBackButton).onTrue(new InstantCommand(liftSim::breakLift, liftSim));
-        new Trigger(copilot::getStartButton).onTrue(new InstantCommand(() -> liftSim.setGoalState(LiftState.OTB_Mid), liftSim));
+        new Trigger(copilot::getLeftBumper).onTrue(new InstantCommand(liftSim::breakLift, liftSim));
+        new Trigger(copilot::getRightBumper).onTrue(new InstantCommand(() -> liftSim.setGoalState(LiftState.OTB_Mid), liftSim));
 
 
 
