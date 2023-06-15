@@ -8,6 +8,8 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.LiftConstants.LiftState;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.HighScore;
+import frc.robot.commands.MidScore;
 import frc.robot.subsystems.ArmSim;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ExampleSubsystem;
@@ -62,8 +64,8 @@ public class RobotContainer {
 
         new Trigger(copilot::getAButton).onTrue(new InstantCommand(() -> liftSim.setGoalState(LiftState.groundCone), liftSim));
         new Trigger(copilot::getBButton).onTrue(new InstantCommand(() -> liftSim.setGoalState(LiftState.stowed), liftSim));
-        new Trigger(copilot::getYButton).onTrue(new InstantCommand(() -> liftSim.setGoalState(LiftState.highConeScore), liftSim));
-        new Trigger(copilot::getXButton).onTrue(new InstantCommand(() -> liftSim.setGoalState(LiftState.midConeScore), liftSim));
+        new Trigger(copilot::getYButton).onTrue(new HighScore(liftSim, liftSim::getGamePiece));
+        new Trigger(copilot::getXButton).onTrue(new MidScore(liftSim, liftSim::getGamePiece));
         new Trigger(copilot::getLeftBumper).onTrue(new InstantCommand(liftSim::breakLift, liftSim));
         new Trigger(copilot::getRightBumper).onTrue(new InstantCommand(() -> liftSim.setGoalState(LiftState.OTB_Mid), liftSim));
 

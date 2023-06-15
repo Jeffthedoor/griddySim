@@ -40,7 +40,7 @@ public class LiftSim extends SubsystemBase {
   private final MechanismLigament2d elevatorMech2d =
       eleRoot.append(
           new MechanismLigament2d("Elevator", 37, 55));
-    private final MechanismLigament2d stageOne = eleRoot.append(new MechanismLigament2d("Stage One", 37, 55, 12, new Color8Bit(Color.kRed)));
+    private final MechanismLigament2d stageOne = eleRoot.append(new MechanismLigament2d("Stage One", 37, 55, 12, new Color8Bit(50, 57, 150)));
     // private final MechanismLigament2d armTower = armPivot.append(new MechanismLigament2d("Elevator", 30, 235));
     private final MechanismLigament2d armMech =
         elevatorMech2d.append(
@@ -49,7 +49,7 @@ public class LiftSim extends SubsystemBase {
                 30,
                 Units.radiansToDegrees(-55),
                 6,
-                new Color8Bit(Color.kYellow)));
+                new Color8Bit(246, 134, 31)));
     private final MechanismLigament2d wristMech =
         armMech.append(
             new MechanismLigament2d(
@@ -57,7 +57,7 @@ public class LiftSim extends SubsystemBase {
                 10,
                 Units.radiansToDegrees(0),
                 6,
-                new Color8Bit(Color.kAquamarine)));
+                new Color8Bit(246, 134, 31)));
 
     private final double gridHomeX = 40.25;
     private final double highNodeHomeX = 79.42;
@@ -70,7 +70,7 @@ public class LiftSim extends SubsystemBase {
     private final MechanismLigament2d MidNode = midNodeHome.append(new MechanismLigament2d("Mid Cone Node", 34, 90, 10, new Color8Bit(Color.kWhite)));
     private final MechanismLigament2d HighNode = highNodeHome.append(new MechanismLigament2d("High Cone Node", 46, 90, 10, new Color8Bit(Color.kWhite)));
     private final MechanismLigament2d GridNode = gridHome.append(new MechanismLigament2d("Grid Wall", 49.75, 0, 50, new Color8Bit(Color.kWhite)));
-    private final MechanismLigament2d bumper = eleRoot.append(new MechanismLigament2d("Bumper", 30.5, 0, 60, new Color8Bit(Color.kRed)));
+    private final MechanismLigament2d bumper = eleRoot.append(new MechanismLigament2d("Bumper", 30.5, 0, 60, new Color8Bit(50, 57, 150)));
 
     private final ArmSim arm;
     private final WristSim wrist;
@@ -115,11 +115,13 @@ public class LiftSim extends SubsystemBase {
             scene = !scene;
 
             mechX = 13;
+            mechY = 5;
         } 
         MidNode.setLength(scene ? 34 : 23.5);
         HighNode.setLength(scene ? 46 : 40);
 
         MidNode.setLineWeight(scene ? 10 : 105);
+        HighNode.setLineWeight(scene ? 10 : 105);
         HighNode.setLineWeight(scene ? 10 : 105);
         
         if(!(mechX + 30.5 >= gridHomeX && deltaX.getAsDouble() > 0) || (mechY >= 10)) {
@@ -128,7 +130,9 @@ public class LiftSim extends SubsystemBase {
         eleRoot.setPosition(mechX, mechY);
     }
 
-
+    public double getGamePiece() {
+        return scene ? 0 : 1;
+    }
 
     /**
      * Sets the goal state of the lift

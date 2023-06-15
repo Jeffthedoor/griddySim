@@ -27,7 +27,7 @@ public class StateTable {
     private static final double ARM_MIN_ANGLE = ArmConstants.MIN_ANGLE;
     private static final double WRIST_MIN_ANGLE = WristConstants.MIN_ANGLE;
 
-    private static final double ELEVATOR_STOW_SAFE = 7.8d;
+    private static final double ELEVATOR_STOW_SAFE = 7.7d;
     private static final double ARM_STOW_SAFE = -105d;
     private static final double WRIST_STOW_SAFE = 95;
 
